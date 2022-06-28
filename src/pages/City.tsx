@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { IndexBar, List } from 'antd-mobile'
-import { useHistory } from 'umi'
+import { connect, useHistory } from 'umi'
 
 interface IState {
     cityId: number;
@@ -13,7 +13,7 @@ interface INewCity {
     title: string;
     items: Array<IState>
 }
-export default function City() {
+function City(props: any) {
     const [citys, setCitys] = useState<INewCity[]>([])
 
     const history = useHistory()
@@ -50,8 +50,18 @@ export default function City() {
 
     const changeCity = (item: IState) => {
         console.log(item.name);
+        props.dispatch({
+            type: 'city/changeCity',
+            payload: {
+                cityName:item.name,
+                cityId:item.cityId
+            }
+        })
+        // 修改 store中的state
         history.push('/cinema')
     }
+
+
     useEffect(() => {
         fetch('https://m.maizuo.com/gateway?k=3971368', {
             headers: {
@@ -86,3 +96,6 @@ export default function City() {
         </div>
     )
 }
+
+// 第一个参数返回一个对象
+export default connect(()=>({}))(City)
